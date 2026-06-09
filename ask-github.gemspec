@@ -2,11 +2,11 @@ require_relative "lib/ask/github/version"
 
 Gem::Specification.new do |spec|
   spec.name = "ask-github"
-  spec.version = Ask::github::VERSION
+  spec.version = Ask::GitHub::VERSION
   spec.authors = ["Kaka Ruto"]
   spec.email = ["kaka@myrrlabs.com"]
 
-  spec.summary = "github service context for the ask-rb ecosystem"
+  spec.summary = "GitHub service context for the ask-rb ecosystem"
   spec.description = "Provides authenticated client helper, context metadata, and error guide for AI agents."
   spec.homepage = "https://github.com/ask-rb/ask-github"
   spec.license = "MIT"
