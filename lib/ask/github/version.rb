@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Ask
-  module Github
-    VERSION = '0.1.0'
+  module GitHub
+    VERSION = "0.1.0"
   end
 end
