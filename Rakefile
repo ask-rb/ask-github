@@ -9,20 +9,8 @@ end
 
 desc "Run tests with coverage"
 task :coverage do
-  require "simplecov"
-  SimpleCov.start do
-    add_filter "/test/"
-    add_filter "/lib/ask/github/version.rb"
-    track_files "lib/**/*.rb"
-  end
-
+  ENV["COVERAGE"] = "true"
   Rake::Task[:test].invoke
-
-  SimpleCov.at_exit do
-    SimpleCov.result.format!
-    coverage = SimpleCov.result.covered_percent
-    puts "\nLine coverage: #{coverage.round(2)}%"
-  end
 end
 
 task default: :test
