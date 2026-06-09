@@ -8,12 +8,14 @@ module Ask
     # Returns an authenticated Octokit client configured for an AI agent.
     #
     # Resolves the GitHub token via +Ask::Auth.resolve(:github_token)+ and
-    # wraps the client in a proxy that converts +Octokit::Unauthorized+ into
-    # +Ask::Auth::InvalidCredential+.
+    # configures the client with sensible defaults:
     #
-    # Configuration:
     # - +auto_paginate+: +true+ (collects all pages automatically)
     # - +per_page+: +100+ (maximum items per page)
+    # - +middleware+: Faraday retry middleware (3 retries, exponential backoff)
+    #
+    # The client is wrapped in a +ClientProxy+ that converts
+    # +Octokit::Unauthorized+ into +Ask::Auth::InvalidCredential+.
     #
     # @example
     #   client = Ask::GitHub.client
@@ -25,7 +27,16 @@ module Ask
     def self.client
       token = Ask::Auth.resolve(:github_token)
 
-      ClientProxy.new(Octokit::Client.new(access_token: token, auto_paginate: true, per_page: 100))
+      client = Octokit::Client.new(access_token: token, auto_paginate: true, per_page: 100)
+
+      # Configure Faraday retry middleware for transient failures
+      client.middleware = Faraday::RackBuilder.new do |builder|
+        builder.request :retry, max: 3, interval: 1, backoff_factor: 2,
+                                retry_statuses: [429, 500, 502, 503]
+        builder.adapter Faraday.default_adapter
+      end
+
+      ClientProxy.new(client)
     end
 
     # Proxies method calls to an +Octokit::Client+, converting authentication
