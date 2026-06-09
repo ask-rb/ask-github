@@ -7,45 +7,56 @@ class IntegrationTest < Minitest::Test
     Ask::Auth.reset_configuration!
   end
 
-  def test_client_can_connect_to_github
-    skip("Set GITHUB_TOKEN to run integration tests") unless ENV["GITHUB_TOKEN"]
-
-    Ask::Auth.configure do |config|
-      config.providers = [->(name, user: nil) { ENV["GITHUB_TOKEN"] if name == "github_token" }]
-    end
-
+  def test_client_can_fetch_root
     VCR.use_cassette("github_root") do
+      Ask::Auth.configure do |config|
+        config.providers = [->(name, user: nil) { ENV.fetch("GITHUB_TOKEN", "ghp_dummy") if name == "github_token" }]
+      end
+
       client = Ask::GitHub.client
       root = client.get("/")
       assert root.key?(:current_user_url)
     end
   end
 
-  def test_client_can_list_repos_for_authenticated_user
-    skip("Set GITHUB_TOKEN to run integration tests") unless ENV["GITHUB_TOKEN"]
+  def test_client_raises_missing_credential
+    Ask::Auth.configure { |c| c.providers = [] }
 
+    assert_raises(Ask::Auth::MissingCredential) { Ask::GitHub.client }
+  end
+
+  def test_client_raises_invalid_credential_on_401
     Ask::Auth.configure do |config|
-      config.providers = [->(name, user: nil) { ENV["GITHUB_TOKEN"] if name == "github_token" }]
+      config.providers = [->(name, user: nil) { "ghp_bad_token" if name == "github_token" }]
     end
 
+    Octokit::Client.any_instance.stubs(:get).raises(Octokit::Unauthorized)
+
+    assert_raises(Ask::Auth::InvalidCredential) { Ask::GitHub.client.get("/user") }
+  end
+
+  def test_client_can_list_repos
     VCR.use_cassette("github_user_repos") do
+      Ask::Auth.configure do |config|
+        config.providers = [->(name, user: nil) { ENV.fetch("GITHUB_TOKEN", "ghp_dummy") if name == "github_token" }]
+      end
+
       client = Ask::GitHub.client
       repos = client.repos
       assert_kind_of Array, repos
     end
   end
 
-  def test_client_raises_invalid_credential_with_bad_token
-    skip("Set GITHUB_TOKEN to run integration tests") unless ENV["GITHUB_TOKEN"]
-
-    # Use actual bad token for an auth-failure VCR cassette
+  def test_delegates_to_octokit
     Ask::Auth.configure do |config|
-      config.providers = [->(name, user: nil) { "ghp_invalid_token_for_testing" }]
+      config.providers = [->(name, user: nil) { "ghp_test" if name == "github_token" }]
     end
 
-    VCR.use_cassette("github_bad_token") do
-      client = Ask::GitHub.client
-      assert_raises(Ask::Auth::InvalidCredential) { client.get("/user") }
-    end
+    client = Ask::GitHub.client
+    assert client.respond_to?(:repos)
+    assert client.respond_to?(:issues)
+    assert client.respond_to?(:pull_requests)
+    assert client.respond_to?(:get)
+    refute client.respond_to?(:nonexistent_method_xyz)
   end
 end

@@ -9,5 +9,6 @@ group :test do
   gem "mocha", "~> 3.1"
   gem "vcr", "~> 6.3"
   gem "webmock", "~> 3.23"
+  gem "simplecov", "~> 0.22"
   gem "rake", "~> 13.0"
 end
