@@ -24,3 +24,5 @@ desc "Push the gem to RubyGems"
 task :release => :build do
   sh "gem push pkg/ask-github-#{Ask::GitHub::VERSION}.gem"
 end
+
+Dir[File.expand_path("lib/tasks/*.rake", __dir__)].each { |f| import f }
