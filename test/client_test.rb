@@ -10,7 +10,7 @@ class ClientTest < Minitest::Test
   def test_client_returns_octokit_client_when_token_available
     token = "ghp_test_token_12345"
     Ask::Auth.configure do |config|
-      config.providers = [->(name, user: nil) { token if name == "github_token" }]
+      config.providers = [->(name, user: nil) { token if name.to_s == "github_token" }]
     end
 
     client = Ask::GitHub.client
@@ -21,7 +21,7 @@ class ClientTest < Minitest::Test
   def test_client_configures_auto_paginate
     token = "ghp_test_token"
     Ask::Auth.configure do |config|
-      config.providers = [->(name, user: nil) { token if name == "github_token" }]
+      config.providers = [->(name, user: nil) { token if name.to_s == "github_token" }]
     end
 
     client = Ask::GitHub.client
@@ -40,7 +40,7 @@ class ClientTest < Minitest::Test
   def test_client_raises_invalid_credential_on_401
     token = "bad_token"
     Ask::Auth.configure do |config|
-      config.providers = [->(name, user: nil) { token if name == "github_token" }]
+      config.providers = [->(name, user: nil) { token if name.to_s == "github_token" }]
     end
 
     Octokit::Client.any_instance.stubs(:get).raises(Octokit::Unauthorized)

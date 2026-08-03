@@ -10,7 +10,7 @@ class IntegrationTest < Minitest::Test
   def test_client_can_fetch_root
     VCR.use_cassette("github_root") do
       Ask::Auth.configure do |config|
-        config.providers = [->(name, user: nil) { ENV.fetch("GITHUB_TOKEN", "ghp_dummy") if name == "github_token" }]
+        config.providers = [->(name, user: nil) { ENV.fetch("GITHUB_TOKEN", "ghp_dummy") if name.to_s == "github_token" }]
       end
 
       client = Ask::GitHub.client
@@ -27,7 +27,7 @@ class IntegrationTest < Minitest::Test
 
   def test_client_raises_invalid_credential_on_401
     Ask::Auth.configure do |config|
-      config.providers = [->(name, user: nil) { "ghp_bad_token" if name == "github_token" }]
+      config.providers = [->(name, user: nil) { "ghp_bad_token" if name.to_s == "github_token" }]
     end
 
     Octokit::Client.any_instance.stubs(:get).raises(Octokit::Unauthorized)
@@ -38,7 +38,7 @@ class IntegrationTest < Minitest::Test
   def test_client_can_list_repos
     VCR.use_cassette("github_user_repos") do
       Ask::Auth.configure do |config|
-        config.providers = [->(name, user: nil) { ENV.fetch("GITHUB_TOKEN", "ghp_dummy") if name == "github_token" }]
+        config.providers = [->(name, user: nil) { ENV.fetch("GITHUB_TOKEN", "ghp_dummy") if name.to_s == "github_token" }]
       end
 
       client = Ask::GitHub.client
@@ -49,7 +49,7 @@ class IntegrationTest < Minitest::Test
 
   def test_delegates_to_octokit
     Ask::Auth.configure do |config|
-      config.providers = [->(name, user: nil) { "ghp_test" if name == "github_token" }]
+      config.providers = [->(name, user: nil) { "ghp_test" if name.to_s == "github_token" }]
     end
 
     client = Ask::GitHub.client
