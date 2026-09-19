@@ -4,6 +4,14 @@
 - Gemspec validation test. Infrastructure: rubocop, overcommit, bin/setup, CI matrix. VCR rake tasks for cassette freshness.
 # Changelog
 
+## [0.2.0] - 2026-08-16
+
+### Added
+
+- **client.rb** — `Ask::GitHub.client(token: nil)` accepts an explicit token (the connector path; token resolution still falls back to `Ask::Auth.resolve(:github_token)`).
+- **Content helpers** — `default_branch(repo)`, `tree(repo, branch:)`, `file(repo, path, branch:)`, and `license(repo)` for docs-as-code sources; 401s map to `Ask::Auth::InvalidCredential` like every other call.
+
+
 ## [0.1.2] - 2026-06-21
 
 ### Added
