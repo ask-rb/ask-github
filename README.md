@@ -4,9 +4,9 @@
 
 > **⚠️ DEPRECATED**
 >
-> This gem is **deprecated**. Use GitHub's official **[GitHub MCP Server](https://github.com/github/github-mcp-server)** instead.
+> This gem is **deprecated**. Use GitHub's official MCP server instead.
 >
-> Existing gem installations may continue to work, but this repository will receive no further feature development. See the [official MCP server](https://github.com/github/github-mcp-server) for setup and capabilities.
+> Existing gem installations may continue to work, but this repository will receive no further feature development.
 
 GitHub service context for AI agents in the ask-rb ecosystem. It provides an
 authenticated Octokit client for the GitHub REST API, metadata constants for
