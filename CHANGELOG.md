@@ -1,3 +1,7 @@
+## Deprecated - 2026-09-22
+
+The `ask-github` gem is deprecated. Existing installations may continue to work, but this repository will receive no further feature development. Use GitHub's official GitHub MCP Server instead: https://github.com/github/github-mcp-server
+
 ## [0.1.3] - 2026-06-25
 
 ### Changed

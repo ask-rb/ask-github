@@ -2,6 +2,12 @@
 
 [![Gem Version](https://badge.fury.io/rb/ask-github.svg)](https://badge.fury.io/rb/ask-github)
 
+> **⚠️ DEPRECATED**
+>
+> This gem is **deprecated**. Use GitHub's official **[GitHub MCP Server](https://github.com/github/github-mcp-server)** instead.
+>
+> Existing gem installations may continue to work, but this repository will receive no further feature development. See the [official MCP server](https://github.com/github/github-mcp-server) for setup and capabilities.
+
 GitHub service context for AI agents in the ask-rb ecosystem. It provides an
 authenticated Octokit client for the GitHub REST API, metadata constants for
 system prompts, and a structured error guide for common GitHub API issues.
